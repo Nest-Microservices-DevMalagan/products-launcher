@@ -1,0 +1,87 @@
+
+services:
+  # Nats-Server  
+  nats-server:
+    image: nats:latest
+    ports:
+      - 8222:8222
+
+  # Client Gateway   
+  client-gateway:
+    build: ./client-gateway
+    ports:
+      - ${CLIENT_GATEWAY_PORT}:3000
+    develop:
+      watch:
+        # Sincroniza cambios en los archivos de código fuente
+        - action: sync
+          path: ./client-gateway/src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/  # Ignora la carpeta node_modules
+            - dist/          # Ignora archivos compilados
+
+        # Reconstruye la imagen si cambia package.json
+        - action: rebuild
+          path: ./client-gateway/package.json
+    command: pnpm start:dev
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+   
+  # Products MS   
+  products-ms:
+    build: ./products-ms
+    develop:
+      watch:
+        - action: sync
+          path: ./products-ms/src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/
+            - dist/
+        - action: rebuild
+          path: ./products-ms/package.json
+    command: pnpm start:dev
+    environment:
+      - PORT=3001
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=file:./dev.db
+  
+  # Orders MS    
+  orders-ms:
+    depends_on:
+      - orders-db
+    build: ./orders-ms
+    develop:
+      watch:
+        - action: sync
+          path: ./orders-ms/src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/
+            - dist/
+        - action: rebuild
+          path: ./orders-ms/package.json
+    command: pnpm start:dev
+    environment:
+      - PORT=3002
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=postgresql://postgres:123456@orders-db:5432/ordersdb?schema=public
+      
+  # Orders-db   
+  orders-db:
+    container_name: orders_database
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./orders-ms/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=ordersdb
+
+
+
