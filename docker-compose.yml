@@ -29,7 +29,7 @@ services:
         # Reconstruye la imagen si cambia package.json
         - action: rebuild
           path: ./client-gateway/package.json
-    command: pnpm start:dev
+    command: bun start:dev
     environment:
       - PORT= ${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=n${NATS_SERVER}
@@ -50,7 +50,7 @@ services:
             - dist/
         - action: rebuild
           path: ./products-ms/package.json
-    command: pnpm start:dev
+    command: bun start:dev
     environment:
       - PORT=${PRODUCTS_MS_PORT}
       - NATS_SERVERS=${NATS_SERVER}
@@ -74,7 +74,7 @@ services:
             - dist/
         - action: rebuild
           path: ./orders-ms/package.json
-    command: pnpm start:dev
+    command: bun start:dev
     environment:
       - PORT=${ORDERS_MS_PORT}
       - NATS_SERVERS=${NATS_SERVER}
@@ -113,7 +113,7 @@ services:
             - dist/
         - action: rebuild
           path: ./payments-ms/package.json
-    command: pnpm start:dev
+    command: bun start:dev
     ports:
       - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
     environment:
