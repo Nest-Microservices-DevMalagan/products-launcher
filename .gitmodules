@@ -7,3 +7,6 @@
 [submodule "products-ms"]
 	path = products-ms
 	url = https://github.com/Nest-Microservices-DevMalagan/products-microservices.git
+[submodule "payments-ms"]
+	path = payments-ms
+	url = https://github.com/Nest-Microservices-DevMalagan/payments-microservices.git
