@@ -1,16 +1,21 @@
 
 services:
-  # Nats-Server  
+# ======================
+# Nats-Server
+# ====================== 
   nats-server:
     image: nats:latest
     ports:
       - 8222:8222
 
-  # Client Gateway   
+# ======================
+# Client Gateway
+# ====================== 
   client-gateway:
+    container_name: client-gateway
     build: ./client-gateway
     ports:
-      - ${CLIENT_GATEWAY_PORT}:3000
+      - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
     develop:
       watch:
         # Sincroniza cambios en los archivos de código fuente
@@ -26,11 +31,14 @@ services:
           path: ./client-gateway/package.json
     command: pnpm start:dev
     environment:
-      - PORT=3000
-      - NATS_SERVERS=nats://nats-server:4222
-   
-  # Products MS   
+      - PORT= ${CLIENT_GATEWAY_PORT}
+      - NATS_SERVERS=n${NATS_SERVER}
+
+# ======================
+# Products Microservice
+# ======================
   products-ms:
+    container_name: products-ms
     build: ./products-ms
     develop:
       watch:
@@ -44,12 +52,15 @@ services:
           path: ./products-ms/package.json
     command: pnpm start:dev
     environment:
-      - PORT=3001
-      - NATS_SERVERS=nats://nats-server:4222
-      - DATABASE_URL=file:./dev.db
-  
-  # Orders MS    
+      - PORT=${PRODUCTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - DATABASE_URL=${PRODUCTS_DB_URL}
+
+# ======================
+# Orders Microservice
+# ====================== 
   orders-ms:
+    container_name: orders-ms
     depends_on:
       - orders-db
     build: ./orders-ms
@@ -65,10 +76,13 @@ services:
           path: ./orders-ms/package.json
     command: pnpm start:dev
     environment:
-      - PORT=3002
-      - NATS_SERVERS=nats://nats-server:4222
-      - DATABASE_URL=postgresql://postgres:123456@orders-db:5432/ordersdb?schema=public
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - DATABASE_URL=${ORDERS_DB_URL}
       
+      
+      
+   
   # Orders-db   
   orders-db:
     container_name: orders_database
@@ -79,9 +93,33 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=ordersdb
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
 
-
-
+# ======================
+# Payments Microservice
+# ======================
+  payments-ms:
+    container_name: payments-ms
+    build: ./payments-ms
+    develop:
+      watch:
+        - action: sync
+          path: ./payments-ms/src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/
+            - dist/
+        - action: rebuild
+          path: ./payments-ms/package.json
+    command: pnpm start:dev
+    ports:
+      - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - STRIPE_SECRET=${STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
