@@ -57,90 +57,90 @@ services:
       - DATABASE_URL=${AUTH_DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
 
-# # ======================
-# # Products Microservice
-# # ======================
-#   products-ms:
-#     container_name: products-ms
-#     build: ./products-ms
-#     develop:
-#       watch:
-#         - action: sync
-#           path: ./products-ms/src
-#           target: /usr/src/app/src
-#           ignore:
-#             - node_modules/
-#             - dist/
-#         - action: rebuild
-#           path: ./products-ms/package.json
-#     command: npm run start:dev
-#     environment:
-#       - PORT=${PRODUCTS_MS_PORT}
-#       - NATS_SERVERS=${NATS_SERVER}
-#       - DATABASE_URL=${PRODUCTS_DB_URL}
+# ======================
+# Products Microservice
+# ======================
+  products-ms:
+    container_name: products-ms
+    build: ./products-ms
+    develop:
+      watch:
+        - action: sync
+          path: ./products-ms/src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/
+            - dist/
+        - action: rebuild
+          path: ./products-ms/package.json
+    command: npm run start:dev
+    environment:
+      - PORT=${PRODUCTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - DATABASE_URL=${PRODUCTS_DB_URL}
 
-# # ======================
-# # Orders Microservice
-# # ====================== 
-#   orders-ms:
-#     container_name: orders-ms
-#     depends_on:
-#       - orders-db
-#     build: ./orders-ms
-#     develop:
-#       watch:
-#         - action: sync
-#           path: ./orders-ms/src
-#           target: /usr/src/app/src
-#           ignore:
-#             - node_modules/
-#             - dist/
-#         - action: rebuild
-#           path: ./orders-ms/package.json
-#     command: npm run start:dev
-#     environment:
-#       - PORT=${ORDERS_MS_PORT}
-#       - NATS_SERVERS=${NATS_SERVER}
-#       - DATABASE_URL=${ORDERS_DB_URL}
+# ======================
+# Orders Microservice
+# ====================== 
+  orders-ms:
+    container_name: orders-ms
+    depends_on:
+      - orders-db
+    build: ./orders-ms
+    develop:
+      watch:
+        - action: sync
+          path: ./orders-ms/src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/
+            - dist/
+        - action: rebuild
+          path: ./orders-ms/package.json
+    command: npm run start:dev
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - DATABASE_URL=${ORDERS_DB_URL}
       
    
-#   # Orders-db   
-#   orders-db:
-#     container_name: orders_database
-#     image: postgres:16.2
-#     restart: always
-#     volumes:
-#       - ./orders-ms/postgres:/var/lib/postgresql/data
-#     ports:
-#       - 5432:5432
-#     environment:
-#       - POSTGRES_USER=${POSTGRES_USER}
-#       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-#       - POSTGRES_DB=${POSTGRES_DB}
+  # Orders-db   
+  orders-db:
+    container_name: orders_database
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./orders-ms/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
 
-# # ======================
-# # Payments Microservice
-# # ======================
-#   payments-ms:
-#     container_name: payments-ms
-#     build: ./payments-ms
-#     develop:
-#       watch:
-#         - action: sync
-#           path: ./payments-ms/src
-#           target: /usr/src/app/src
-#           ignore:
-#             - node_modules/
-#             - dist/
-#         - action: rebuild
-#           path: ./payments-ms/package.json
-#     command: npm run start:dev
-#     ports:
-#       - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
-#     environment:
-#       - PORT=${PAYMENTS_MS_PORT}
-#       - NATS_SERVERS=${NATS_SERVER}
-#       - STRIPE_SECRET=${STRIPE_SECRET}
-#       - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
-#       - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
-#       - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
+# ======================
+# Payments Microservice
+# ======================
+  payments-ms:
+    container_name: payments-ms
+    build: ./payments-ms
+    develop:
+      watch:
+        - action: sync
+          path: ./payments-ms/src
+          target: /usr/src/app/src
+          ignore:
+            - node_modules/
+            - dist/
+        - action: rebuild
+          path: ./payments-ms/package.json
+    command: npm run start:dev
+    ports:
+      - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - STRIPE_SECRET=${STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
