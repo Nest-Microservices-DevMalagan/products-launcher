@@ -1,0 +1,86 @@
+
+services:
+# ======================
+# Nats-Server
+# ====================== 
+  nats-server:
+    image: nats:latest
+
+# ======================
+# Client Gateway
+# ====================== 
+  client-gateway:
+    image: client-gateway-prod
+    container_name: client-gateway-prod-container
+    build:
+      context: ./client-gateway
+      dockerfile: dockerfile.prod
+    ports:
+      - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
+    environment:
+      - PORT= ${CLIENT_GATEWAY_PORT}
+      - NATS_SERVERS=${NATS_SERVER}  
+
+# ======================
+# Auth Microservice
+# ======================
+  auth-ms:
+    image: auth-ms-prod
+    container_name: auth-ms-prod-container
+    build:
+      context: ./auth-ms
+      dockerfile: dockerfile.prod
+    environment:
+      - PORT=${AUTH_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+
+# ======================
+# Products Microservice
+# ======================
+  products-ms:
+    image: products-ms-prod
+    container_name: products-ms-prod-container
+    build:
+      context: ./products-ms
+      dockerfile: dockerfile.prod
+    environment:
+      - PORT=${PRODUCTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - DATABASE_URL=${PRODUCTS_DB_URL}
+
+# ======================
+# Orders Microservice
+# ====================== 
+  orders-ms:
+    image: orders-ms-prod
+    container_name: orders-ms-prod-container
+    build: 
+      context: ./orders-ms
+      dockerfile: dockerfile.prod
+      args:
+        - ORDERS_DB_URL=${ORDERS_DB_URL}
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - DATABASE_URL=${ORDERS_DB_URL}
+
+# ======================
+# Payments Microservice
+# ======================
+  payments-ms:
+    image: payments-ms-prod
+    container_name: payments-ms-prod-container
+    build:
+      context: ./payments-ms
+      dockerfile: dockerfile.prod
+    ports:
+      - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVER}
+      - STRIPE_SECRET=${STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
