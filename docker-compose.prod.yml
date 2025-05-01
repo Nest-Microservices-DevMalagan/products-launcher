@@ -60,7 +60,7 @@ services:
       context: ./orders-ms
       dockerfile: dockerfile.prod
       args:
-        - ORDERS_DB_URL=${ORDERS_DB_URL}
+        - ORDERS_DATABASE_URL=${ORDERS_DB_URL}
     environment:
       - PORT=${ORDERS_MS_PORT}
       - NATS_SERVERS=${NATS_SERVER}
