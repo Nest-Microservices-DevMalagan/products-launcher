@@ -1,4 +1,9 @@
 # Documentación del Curso de Microservicios con NestJS
+## Diagramas del proyecto
+  ### Entorno desarrollo
+  ![Diagrama dev](./resources/dev.png)
+  ### Entorno produccion
+  ![Diagrama dev](./resources/prod.png)
 
 ## Índice
 
@@ -463,6 +468,7 @@ nest-microservices-devmalagan-products-launcher/
 ├── .env.template - Plantilla de variables de entorno
 ├── auth-ms/ - Microservicio de autenticación 
 ├── client-gateway/ - API Gateway para clientes
+├── resourses/ - Diagrmas/images del proeycto
 ├── k8s/ - Configuración de Kubernetes
 │   └── ecommerce/ - Chart de Helm
 │       ├── Chart.yaml
