@@ -10,8 +10,8 @@ services:
 # Client Gateway
 # ====================== 
   client-gateway:
-    image: client-gateway-prod
-    container_name: client-gateway-prod-container
+    image: us-east4-docker.pkg.dev/ecommerce-microserivces/nestjs-ecommerce-registry/client-gateway
+    container_name: client-gateway-container
     build:
       context: ./client-gateway
       dockerfile: dockerfile.prod
@@ -25,8 +25,8 @@ services:
 # Auth Microservice
 # ======================
   auth-ms:
-    image: auth-ms-prod
-    container_name: auth-ms-prod-container
+    image: us-east4-docker.pkg.dev/ecommerce-microserivces/nestjs-ecommerce-registry/auth-ms
+    container_name: auth-ms-container
     build:
       context: ./auth-ms
       dockerfile: dockerfile.prod
@@ -40,8 +40,8 @@ services:
 # Products Microservice
 # ======================
   products-ms:
-    image: products-ms-prod
-    container_name: products-ms-prod-container
+    image: us-east4-docker.pkg.dev/ecommerce-microserivces/nestjs-ecommerce-registry/products-ms
+    container_name: products-ms-container
     build:
       context: ./products-ms
       dockerfile: dockerfile.prod
@@ -54,13 +54,13 @@ services:
 # Orders Microservice
 # ====================== 
   orders-ms:
-    image: orders-ms-prod
-    container_name: orders-ms-prod-container
+    image: us-east4-docker.pkg.dev/ecommerce-microserivces/nestjs-ecommerce-registry/orders-ms
+    container_name: orders-ms-container
     build: 
       context: ./orders-ms
       dockerfile: dockerfile.prod
       args:
-        - ORDERS_DB_URL=${ORDERS_DB_URL}
+        - ORDERS_DATABASE_URL=${ORDERS_DB_URL}
     environment:
       - PORT=${ORDERS_MS_PORT}
       - NATS_SERVERS=${NATS_SERVER}
@@ -70,8 +70,8 @@ services:
 # Payments Microservice
 # ======================
   payments-ms:
-    image: payments-ms-prod
-    container_name: payments-ms-prod-container
+    image: us-east4-docker.pkg.dev/ecommerce-microserivces/nestjs-ecommerce-registry/payments-ms
+    container_name: payments-ms-container
     build:
       context: ./payments-ms
       dockerfile: dockerfile.prod
